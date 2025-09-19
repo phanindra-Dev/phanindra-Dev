@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>E-Commerce Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #aaa;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .hidden {
+            display: none;
+        }
+        #dashboard {
+            width: 800px;
+            margin: 20px auto;
+        }
+        #dashboard h3 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            margin-bottom: 10px;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+<!-- Login Section -->
+<div class="container" id="loginSection">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <span id="showSignup" style="color:blue;cursor:pointer;">Sign Up</span></p>
+    <p id="loginError" style="color:red;"></p>
+</div>
+
+<!-- Signup Section -->
+<div class="container hidden" id="signupSection">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+        <input type="text" id="signupName" placeholder="Name" required>
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <span id="showLogin" style="color:blue;cursor:pointer;">Login</span></p>
+    <p id="signupError" style="color:red;"></p>
+</div>
+
+<!-- Dashboard Section -->
+<div id="dashboard" class="hidden">
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+    <h3>Welcome, <span id="userName"></span>!</h3>
+
+    <!-- Product Search -->
+    <input type="text" id="searchInput" placeholder="Search product by name or category">
+    <button id="searchBtn">Search</button>
+
+    <!-- Products Table -->
+    <table id="productsTable">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Add to Cart</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Cart Table -->
+    <h3>Your Cart</h3>
+    <table id="cartTable">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
