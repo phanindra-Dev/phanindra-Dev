@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Test results
+test-results/
+playwright-report/
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# VS Code
+.vscode/settings.json
+
+# Git
+.git/
+
+# Coverage reports
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
