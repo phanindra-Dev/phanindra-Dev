@@ -22,6 +22,6 @@ public class Payment {
 
     // Many payments belong to one order
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id")//foreign Key
     private Order order;
 }

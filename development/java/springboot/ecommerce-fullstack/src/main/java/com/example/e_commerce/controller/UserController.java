@@ -35,13 +35,18 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+//    @PostMapping("/login")
+//    public User loginUser(@RequestBody User user) {
+//        return userService.getUsers().stream()
+//                .filter(u -> u.getEmail().equals(user.getEmail())
+//                        && u.getPassword().equals(user.getPassword()))
+//                .findFirst()
+//                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+//    }
+
     @PostMapping("/login")
     public User loginUser(@RequestBody User user) {
-        return userService.getUsers().stream()
-                .filter(u -> u.getEmail().equals(user.getEmail())
-                        && u.getPassword().equals(user.getPassword()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+        return userService.login(user.getEmail(), user.getPassword());
     }
 
 }

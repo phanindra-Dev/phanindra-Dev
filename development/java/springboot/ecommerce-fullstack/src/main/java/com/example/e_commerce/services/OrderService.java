@@ -52,7 +52,7 @@ public class OrderService {
 
         double total = 0.0;
         List<Ordered> orderedItems = new ArrayList<>();
-        for(PlaceOrderRequest.ItemRequest items : request.getItems()){
+        for(PlaceOrderRequest.ItemRequest items : request.getItems()) {
             Product product = productRepo.findById(items.getProductId()).orElseThrow(()-> new RuntimeException("Product Not Found"));
 
             if(product.getQuantity() < items.getQuantity()){

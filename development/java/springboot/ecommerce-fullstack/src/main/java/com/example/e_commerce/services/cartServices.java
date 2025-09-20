@@ -13,7 +13,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service//business logic and make it as bean
 @Transactional
 public class cartServices {
     @Autowired
