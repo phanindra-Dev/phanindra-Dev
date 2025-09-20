@@ -100,7 +100,6 @@ cd my-dashboard
 
 ## 📈 Current Projects
 
-<!-- Update this section as you add projects -->
 - 🔄 *Projects will be listed here as they are added*
 
 ## 🤝 Contributing Guidelines
@@ -114,9 +113,9 @@ If collaborating with others:
 
 ## 📞 Contact
 
-- GitHub: [Your GitHub Profile]
-- Email: [Your Email]
-- LinkedIn: [Your LinkedIn]
+- GitHub: Phanindra-Dev
+- Email: phanindrajaychand0@gmail.com
+
 
 ---
 
