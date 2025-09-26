@@ -107,6 +107,7 @@ If collaborating with others:
 
 - GitHub: Phanindra-Dev
 - Email: phanindrajaychand0@gmail.com
+- LinkedIn : https://www.linkedin.com/in/phanindra-nulakani-a523a0264/
 
 
 ---
