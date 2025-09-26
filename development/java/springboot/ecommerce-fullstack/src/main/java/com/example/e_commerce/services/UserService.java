@@ -30,7 +30,6 @@ public class UserService {
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setPassword(updatedUser.getPassword());
-        existingUser.setBalance(updatedUser.getBalance());
 
         return userRepository.save(existingUser);
     }

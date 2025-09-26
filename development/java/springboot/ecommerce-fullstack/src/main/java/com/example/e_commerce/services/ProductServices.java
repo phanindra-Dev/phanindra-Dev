@@ -15,8 +15,8 @@ public class ProductServices {
         return productRepo.findAll();
     }
 
-    public void saveProducts(Product p){
-        productRepo.save(p);
+    public List<Product> saveProducts(List<Product> products){
+        return productRepo.saveAll(products);
     }
 
     public List<Product> searchByName(String name) {
@@ -34,4 +34,8 @@ public class ProductServices {
     public List<Product> searchByCategoryAndPrice(String category, double min, double max) {
         return productRepo.findByCategoryIgnoreCaseAndPriceBetween(category, min, max);
     }
+    public void deleteById(int id){
+        productRepo.deleteById(id);
+    }
+
 }

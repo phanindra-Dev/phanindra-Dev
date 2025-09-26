@@ -34,4 +34,8 @@ public class CartController {
     public cart viewCart(@PathVariable int userId) {
         return cartService.viewCart(userId);
     }
+    @GetMapping("/total/{userId}")
+    public double totalPrice(@PathVariable int userId){
+        return cartService.getTotalPriceByUserId(userId);
+    }
 }

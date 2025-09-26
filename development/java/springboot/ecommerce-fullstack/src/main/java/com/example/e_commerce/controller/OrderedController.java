@@ -1,8 +1,11 @@
 package com.example.e_commerce.controller;
 
+import com.example.e_commerce.Entries.Order;
 import com.example.e_commerce.Entries.Ordered;
+import com.example.e_commerce.repo.OrderRepo;
 import com.example.e_commerce.services.OrderedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,4 +41,5 @@ public class OrderedController {
     public String deleteOrdered(@PathVariable int id) {
         return orderedService.deleteOrdered(id);
     }
+
 }

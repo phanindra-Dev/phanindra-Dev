@@ -12,22 +12,15 @@ projects/
 │   ├── javascript/
 │   │   ├── react/        # React applications
 │   │   └── nodejs/       # Node.js backend projects
-│   ├── python/
-│   │   ├── django/       # Django web applications
-│   │   └── flask/        # Flask applications
 │   ├── frontend/
 │   │   ├── angular/      # Angular applications
-│   │   ├── vue/          # Vue.js applications  
 │   │   └── html-css/     # Static web projects
-│   ├── mobile/
-│   │   ├── android/      # Android applications
-│   │   └── ios/          # iOS applications
 │   ├── databases/
 │   │   ├── mysql/        # MySQL projects & schemas
 │   │   └── mongodb/      # MongoDB projects & collections
 │   ├── devops/
-│   │   ├── docker/       # Docker configurations
-│   │   └── kubernetes/   # Kubernetes manifests
+│   │   └── docker/       # Docker configurations
+│   │
 │   ├── testing/
 │   │   ├── unit/         # Unit testing projects
 │   │   └── integration/  # Integration testing
@@ -91,11 +84,10 @@ cd my-dashboard
 
 ## 🛠️ Technologies Covered
 
-- **Backend**: Java (Spring Boot), Python (Django, Flask), Node.js
-- **Frontend**: React, Angular, Vue.js, HTML/CSS
-- **Mobile**: Android, iOS
+- **Backend**: Java (Spring Boot)
+- **Frontend**: HTML/CSS
 - **Databases**: MySQL, MongoDB
-- **DevOps**: Docker, Kubernetes
+- **DevOps**: Docker
 - **Testing**: Unit Testing, Integration Testing
 
 ## 📈 Current Projects

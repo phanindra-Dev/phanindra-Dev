@@ -2,6 +2,7 @@ package com.example.e_commerce.controller;
 
 import com.example.e_commerce.Entries.Order;
 import com.example.e_commerce.dto.PlaceOrderRequest;
+import com.example.e_commerce.repo.OrderRepo;
 import com.example.e_commerce.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class OrderController {
     public Order addOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
+
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@RequestBody PlaceOrderRequest request) {
         Order order = orderService.placeOrder(request);
@@ -45,6 +47,7 @@ public class OrderController {
     public List<Order> getOrdersByUser(@PathVariable int userId) {
         return orderService.getOrdersByUser(userId);
     }
+
     // Update Order Status
     @PutMapping("/{orderId}/status")
     public ResponseEntity<Order> updateStatus(@PathVariable int orderId, @RequestParam String status) {
@@ -59,4 +62,18 @@ public class OrderController {
         return ResponseEntity.ok(cancelledOrder);
     }
 
+    @Autowired
+    private OrderRepo orderRepository;
+
+    @GetMapping("/success")
+    public ResponseEntity<List<Order>> getSuccessOrders() {
+        List<Order> successOrders = orderRepository.findByStatus("Success");
+        return ResponseEntity.ok(successOrders);
+    }
+
+    @GetMapping("/failed")
+    public ResponseEntity<List<Order>> getFailedOrders() {
+        List<Order> successOrders = orderRepository.findByStatus("Failed");
+        return ResponseEntity.ok(successOrders);
+    }
 }

@@ -23,7 +23,7 @@ public class Order {
 
     private double totalAmount;
 
-    private String status = "Pending";
+    private String status ;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'Unpaid'")
     private String paymentStatus;

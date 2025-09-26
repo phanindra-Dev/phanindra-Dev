@@ -2,10 +2,8 @@ package com.example.e_commerce.services;
 
 import com.example.e_commerce.Entries.*;
 import com.example.e_commerce.dto.PlaceOrderRequest;
-import com.example.e_commerce.repo.OrderRepo;
-import com.example.e_commerce.repo.ProductRepo;
-import com.example.e_commerce.repo.UserAddressRepository;
-import com.example.e_commerce.repo.UserRepository;
+import com.example.e_commerce.repo.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +23,8 @@ public class OrderService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private ProductRepo productRepo;
+    @Autowired
+    private BankRepository bankRepository;
 
     // Get all
     public List<Order> getAll() {
@@ -41,10 +41,21 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order placeOrder(PlaceOrderRequest request){
-        User user = userRepository.findById(request.getUserId()).orElseThrow(()-> new RuntimeException("User Not Found"));
-        UserAddress address  = userAddressRepository.findById(request.getAddressId()).orElseThrow(()-> new RuntimeException("UserAddress Not Found"));
+    @Transactional
+    public Order placeOrder(PlaceOrderRequest request) {
 
+        // 1. Fetch user and address
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        UserAddress address = userAddressRepository.findById(request.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address Not Found"));
+
+        // 2. Fetch linked bank account
+        Bank bank = (Bank) bankRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("No bank account linked to user"));
+
+        // 3. Prepare order and calculate total
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(address);
@@ -52,32 +63,50 @@ public class OrderService {
 
         double total = 0.0;
         List<Ordered> orderedItems = new ArrayList<>();
-        for(PlaceOrderRequest.ItemRequest items : request.getItems()) {
-            Product product = productRepo.findById(items.getProductId()).orElseThrow(()-> new RuntimeException("Product Not Found"));
 
-            if(product.getQuantity() < items.getQuantity()){
+        for (PlaceOrderRequest.ItemRequest itemReq : request.getItems()) {
+            Product product = productRepo.findById(itemReq.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product Not Found"));
+
+            if (product.getQuantity() < itemReq.getQuantity()) {
                 throw new RuntimeException("Not enough stock for " + product.getProductName());
             }
-            product.setQuantity(product.getQuantity() - items.getQuantity());
-            productRepo.save(product);
 
             Ordered orderedItem = new Ordered();
             orderedItem.setOrder(order);
             orderedItem.setProduct(product);
-            orderedItem.setQuantity(items.getQuantity());
+            orderedItem.setQuantity(itemReq.getQuantity());
             orderedItem.setRating(product.getRating());
-            orderedItem.setPrice(product.getPrice() * items.getQuantity());
+            orderedItem.setPrice(product.getPrice() * itemReq.getQuantity());
 
             orderedItems.add(orderedItem);
             total += orderedItem.getPrice();
-
         }
 
         order.setOrderedItems(orderedItems);
         order.setTotalAmount(total);
 
-        return orderRepository.save(order);
+        // 4. Payment logic
+        if (bank.getBalance() >= total) {
+            bank.setBalance(bank.getBalance() - total);
+            bankRepository.save(bank);
 
+            // Deduct stock only after payment succeeds
+            for (Ordered item : orderedItems) {
+                Product product = item.getProduct();
+                product.setQuantity(product.getQuantity() - item.getQuantity());
+                productRepo.save(product);
+            }
+
+            order.setStatus("Success");
+            order.setPaymentStatus("Paid");
+        } else {
+            order.setStatus("Failed");
+            order.setPaymentStatus("Failed");
+        }
+
+        // 5. Save and return order
+        return orderRepository.save(order);
     }
 
 

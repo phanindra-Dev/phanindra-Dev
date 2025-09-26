@@ -3,6 +3,9 @@ package com.example.e_commerce.Entries;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -14,7 +17,11 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private double balance;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bank> banks = new ArrayList<>();
+
+
 
     // getters & setters
 

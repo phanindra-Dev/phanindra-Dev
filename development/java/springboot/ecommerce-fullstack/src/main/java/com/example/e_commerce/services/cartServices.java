@@ -9,7 +9,6 @@ import com.example.e_commerce.repo.UserRepository;
 import com.example.e_commerce.repo.cartItemsRepo;
 import com.example.e_commerce.repo.cartRepo;
 import jakarta.transaction.Transactional;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,5 +101,11 @@ public class cartServices {
     public cart viewCart(int userId) {
         return cartRepository.findByUserUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user"));
+    }
+
+    public double getTotalPriceByUserId(int userId) {
+        cart cart = cartRepository.findByUserUserId(userId).orElseThrow(() ->
+                new RuntimeException("Cart not found for user"));
+        return cart.getTotalPrice();
     }
 }
