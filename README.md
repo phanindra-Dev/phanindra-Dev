@@ -92,7 +92,7 @@ cd my-dashboard
 
 ## 📈 Current Projects
 
-- 🔄 *Projects will be listed here as they are added*
+- 🔄 E-Commerce Full Stack Project
 
 ## 🤝 Contributing Guidelines
 
