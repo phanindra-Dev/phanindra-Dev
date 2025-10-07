@@ -1,0 +1,558 @@
+ * {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f1f3f6;
+}
+
+/* ===== NAVBAR STYLES ===== */
+nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 5%;
+}
+nav .logo {
+  display: flex;
+  align-items: center;
+}
+nav .logo img {
+  height: 25px;
+  width: auto;
+  margin-right: 10px;
+}
+nav .logo h1 {
+  font-size: 1.1rem;
+  background: linear-gradient(to right, #b927fc 0%, #2c64fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor:pointer;
+}
+.achu{
+      text-decoration:none;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+nav ul li {
+  margin-left: 1.5rem;
+}
+nav ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 95%;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+nav ul li a:hover {
+  background-color: #f5f5f5;
+}
+.hamburger {
+  display: none;
+  cursor: pointer;
+}
+.hamburger .line {
+  width: 25px;
+  height: 2px;
+  background-color: #1f1f1f;
+  display: block;
+  margin: 6px auto;
+  transition: all 0.3s ease-in-out;
+}
+.hamburger-active {
+  transition: all 0.3s ease-in-out;
+  transform: rotate(45deg);
+}
+.hamburger-active .line:nth-child(2) {
+  width: 0;
+}
+.hamburger-active .line:nth-child(1) {
+  transform: translateY(8px);
+}
+.hamburger-active .line:nth-child(3) {
+  transform: translateY(-6px) rotate(90deg);
+}
+.menubar {
+  position: absolute;
+  top: 0;
+  left: -60%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 60%;
+  height: 100vh;
+  padding: 20% 0;
+  background: #fff;
+  transition: all 0.5s ease-in;
+  z-index: 999;
+}
+.menubar.active {
+  left: 0;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.menubar ul {
+  padding: 0;
+  list-style: none;
+}
+.menubar ul li {
+  margin-bottom: 32px;
+}
+.menubar ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 95%;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    z-index: 1;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Dropdown items */
+.dropdown-content li {
+    padding: 8px 16px;
+}
+
+.dropdown-content li a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Show the dropdown when hovering over the UserName */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.menubar ul li a:hover {
+  background-color: #f5f5f5;
+}
+@media screen and (max-width: 790px) {
+  .hamburger {
+    display: block;
+  }
+  nav ul {
+    display: none;
+  }
+}
+
+/* ===== AUTH & DASHBOARD STYLES ===== */
+.category-btn {
+  margin-right: 10px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: 1px solid #333;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.category-btn:hover {
+  background-color: #ddd;
+}
+.auth-fullscreen {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+.auth-left {
+  background-color: #2874f0;
+  color: #fff;
+  width: 40%;
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.auth-left h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+.auth-left p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.auth-right {
+  width: 60%;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+}
+.auth-right form {
+  display: flex;
+  flex-direction: column;
+}
+.auth-right input {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+}
+.auth-right input:focus {
+  outline: none;
+  border-color: #2874f0;
+}
+.auth-right button {
+  padding: 12px;
+  background-color: #fb641b;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.auth-right button:hover {
+  background-color: #e85a12;
+}
+.toggle {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 15px;
+}
+.toggle span {
+  color: #2874f0;
+  font-weight: bold;
+  cursor: pointer;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+}
+.hidden {
+  display: none;
+}
+#dashboard {
+  width: 100%;
+  margin: 30px auto;
+  padding: 25px;
+  background: #FFF;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+#dashboard h3 {
+  margin-top: 0;
+}
+input[type="text"]#searchInput {
+   width: 500px;
+  padding: 10px;
+  margin-right: 10px;
+}
+#searchBtn {
+  padding: 10px 20px;
+  background-color: #2874f0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+table, th, td {
+  border: 1px solid #ccc;
+}
+th {
+  background-color: #2874f0;
+  color: white;
+}
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  float: right;
+  margin-left:10px;
+  cursor: pointer;
+  display: flex;           /* enable flex layout */
+  align-items: center;     /* vertically center content */
+}
+.logout-btn:hover {
+  background-color: #c82333;
+}
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+.nav-actions {
+    display: flex;
+   width: auto;
+    justify-content: center;
+     align-items: center;
+}
+.add-to-cart-button {
+  display: block;
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  background: #333;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 3px solid #333;
+  transition: all 0.35s;
+  cursor: pointer;
+  margin: auto;
+}
+.add-to-cart-button:hover {
+  width: 200px;
+  border: 3px solid #2ecc71;
+  background: transparent;
+  color: #2ecc71;
+}
+
+@media (max-width: 768px) {
+  .auth-fullscreen {
+    flex-direction: column;
+  }
+  .auth-left,
+  .auth-right {
+    width: 100%;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  input[type="text"]#searchInput {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* ===== PRODUCT CARDS ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Increased min size for bigger cards */
+  gap: 30px;
+  margin-top: 40px; /* Added more space between grid and top */
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 12px; /* More rounded corners for a smoother look */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly larger shadow for more depth */
+  padding: 25px; /* Added more padding for larger content */
+  text-align: center;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition for hover effects */
+}
+
+.product-card:hover {
+  transform: translateY(-10px); /* More prominent hover lift */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* Slightly darker shadow on hover */
+}
+
+.product-card img {
+  width: 100%;
+  height: 250px; /* Fixed height for a consistent look */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  object-position: center; /* Ensures the image is centered (avoids cutting off the top or bottom) */
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+
+.product-card h4 {
+  font-size: 22px; /* Bigger font for product name */
+  font-weight: 600; /* Bolder font for the name */
+  margin: 12px 0; /* More space between title and description */
+  color: #333; /* Darker color for better readability */
+}
+
+.product-card p {
+  margin: 10px 0;
+  color: #666; /* Slightly lighter text for the description */
+  font-size: 16px; /* Slightly bigger text */
+  line-height: 1.5;
+}
+
+.product-card .price {
+  font-size: 18px; /* Bigger price text */
+  font-weight: bold;
+  color: #2874f0; /* Keeping the blue for price */
+  margin: 12px 0;
+}
+
+.product-card button {
+  background: #2874f0;
+  color: #fff;
+  border: none;
+  padding: 12px 16px; /* Bigger button with more padding */
+  border-radius: 6px; /* More rounded button corners */
+  cursor: pointer;
+  font-weight: 600; /* Bolder text on button */
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 15px;
+}
+
+.product-card button:hover {
+  background: #0056c1;
+  transform: scale(1.05); /* Slightly grow the button on hover for a more interactive feel */
+}
+
+/* ===== DARK MODE STYLES ===== */
+
+.dark-mode-toggle {
+    background-color: #000; /* Black background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 0; /* No rounded corners (square) */
+    width: 100px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    outline: none; /* Remove outline on click */
+}
+
+
+/* For general body styling */
+body.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #ddd; /* Lighter text */
+}
+
+/* Navbar in Dark Mode */
+body.dark-mode nav {
+    background-color: #333; /* Dark background */
+    color: #ddd; /* Light text */
+}
+
+body.dark-mode nav ul li a {
+    color: #ddd; /* Light text for links */
+}
+
+body.dark-mode nav ul li a:hover {
+    background-color: #444; /* Slightly darker hover state */
+}
+
+/* Menu bar (hamburger menu) */
+body.dark-mode .menubar {
+    background-color: #222; /* Darker background */
+}
+
+/* Product Cards */
+body.dark-mode .product-card {
+    background-color: #333; /* Dark card background */
+    color: #ddd; /* Light text */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Darker shadow */
+}
+
+body.dark-mode .product-card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Darker shadow on hover */
+}
+
+/* Product card button */
+body.dark-mode .product-card button {
+    background: #444;
+    color: #fff;
+    border-radius: 6px;
+}
+
+body.dark-mode .product-card button:hover {
+    background: #666;
+}
+
+/* Add to cart button */
+body.dark-mode .add-to-cart-button {
+    background: #444;
+    color: #fff;
+    border: 3px solid #444;
+}
+
+body.dark-mode .add-to-cart-button:hover {
+    border: 3px solid #2ecc71;
+    color: #2ecc71;
+}
+
+
+/* Search bar */
+body.dark-mode input[type="text"]#searchInput {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #888;
+}
+
+body.dark-mode input[type="text"]#searchInput:focus {
+    border-color: #2874f0;
+}
+
+/* Button in dark mode */
+body.dark-mode button {
+    background-color: #444;
+    color: #fff;
+    border-radius: 4px;
+}
+
+body.dark-mode button:hover {
+    background-color: #666;
+}
+
+/* Auth Section */
+body.dark-mode .auth-left {
+    background-color: #1f1f1f; /* Darker background */
+}
+
+body.dark-mode .auth-right {
+    background-color: #222; /* Darker background for right side */
+}
+
+/* Login & Sign Up Input fields */
+body.dark-mode .auth-right input {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+}
+
+body.dark-mode .auth-right input:focus {
+    border-color: #2874f0;
+}
+
+/* Dark Mode Transitions */
+body, nav, .product-card, .menubar, button {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Add additional dark styling for other elements here */
+

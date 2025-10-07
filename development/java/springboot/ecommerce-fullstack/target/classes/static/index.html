@@ -3,272 +3,71 @@
 <head>
     <meta charset="UTF-8" />
     <title>E-Commerce Portal</title>
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-        .category-btn {
-            margin-right: 10px;
-            padding: 6px 12px;
-            cursor: pointer;
-            border: 1px solid #333;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        .category-btn:hover {
-            background-color: #ddd;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f1f3f6;
-        }
-        /* ===== FULLSCREEN CONTAINER ===== */
-        .auth-fullscreen {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-        .auth-left {
-            background-color: #2874f0;
-            color: #fff;
-            width: 40%;
-            padding: 40px 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .auth-left h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-        .auth-left p {
-            font-size: 16px;
-            line-height: 1.6;
-        }
-        .auth-right {
-            width: 60%;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background-color: #fff;
-        }
-        .auth-right form {
-            display: flex;
-            flex-direction: column;
-        }
-        .auth-right input {
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 16px;
-        }
-        .auth-right input:focus {
-            outline: none;
-            border-color: #2874f0;
-        }
-        .auth-right button {
-            padding: 12px;
-            background-color: #fb641b;
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .auth-right button:hover {
-            background-color: #e85a12;
-        }
-        .toggle {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 15px;
-        }
-        .toggle span {
-            color: #2874f0;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .error-message {
-            color: red;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .hidden {
-            display: none;
-        }
-        /* === Dashboard Section === */
-        #dashboard {
-            width: 100%;
-            margin: 30px auto;
-            padding: 25px;
-            background: #FAA533;
-            border-radius: 8px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-
-        }
-        #dashboard h3 {
-            margin-top: 0;
-        }
-        input[type="text"]#searchInput {
-            width: 70%;
-            padding: 10px;
-            margin-right: 5px;
-        }
-        #searchBtn {
-            padding: 10px 20px;
-            background-color: #2874f0;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-        th {
-            background-color: #2874f0;
-            color: white;
-        }
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 4px;
-            float: right;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-        .logout-btn:hover {
-            background-color: #c82333;
-        }
-            .add-to-cart-button {
-            display: block;
-            aline-item:center;
-            width: 250px;
-            height: 50px;
-            line-height: 50px;
-            font-weight: bold;
-            text-decoration: none;
-            background: #333;
-            text-align: center;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 3px solid #333;
-            transition: all 0.35s;
-            cursor: pointer;
-        }
-
-        .add-to-cart-button:hover {
-            width: 200px;
-            border: 3px solid #2ecc71;
-            background: transparent;
-            color: #2ecc71;
-        }
-        @media (max-width: 768px) {
-            .auth-fullscreen {
-                flex-direction: column;
-            }
-            .auth-left,
-            .auth-right {
-                width: 100%;
-                padding: 30px 20px;
-                text-align: center;
-            }
-            input[type="text"]#searchInput {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- ===== Login Section ===== -->
-<div class="auth-fullscreen" id="loginSection">
-    <div class="auth-left">
-        <h2>Login</h2>
-        <p>Get access to your Orders, Wishlist and Recommendations</p>
+<!-- ===== NAVBAR ===== -->
+<nav id="nav">
+    <div class="logo">
+        <img src="" alt="" />
+        <a class="achu" href="index.html"><h1>Phani</h1></a>
     </div>
-    <div class="auth-right">
-        <form id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Enter Email" required />
-            <input type="password" id="loginPassword" placeholder="Enter Password" required />
-            <button type="submit">Login</button>
-        </form>
-        <div class="toggle">
-            New to our store? <span id="showSignup">Create an account</span>
-        </div>
-        <p id="loginError" class="error-message"></p>
-    </div>
-</div>
 
-<!-- ===== Signup Section ===== -->
-<div class="auth-fullscreen hidden" id="signupSection">
-    <div class="auth-left">
-        <h2>Looks like you're new here!</h2>
-        <p>Sign up to start shopping with us</p>
+    <div class="nav-actions">
+        <input type="text" id="searchInput" placeholder="Search product by name or category" />
+        <button id="searchBtn">Search</button>
     </div>
-    <div class="auth-right">
-        <form id="signupForm">
-            <input type="text" id="signupName" placeholder="Enter Name" required />
-            <input type="email" id="signupEmail" placeholder="Enter Email" required />
-            <input type="password" id="signupPassword" placeholder="Enter Password" required />
-            <button type="submit">Sign Up</button>
-        </form>
-        <div class="toggle">
-            Already have an account? <span id="showLogin">Login</span>
-        </div>
-        <p id="signupError" class="error-message"></p>
+
+    <!-- Navigation Links -->
+    <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li class="dropdown">
+            <a href="#">User</a>
+            <ul class="dropdown-content">
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+
+            </ul>
+        </li>
+        <li><a href="#Cart_Id">Cart</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <!-- Dark Mode Toggle Button -->
+        <button id="darkModeToggle" class="dark-mode-toggle">Dark Mode</button>
+
+    </ul>
+
+    <!-- Search and Logout -->
+
+
+    <!-- Hamburger for mobile -->
+    <div class="hamburger" aria-label="Toggle Menu" role="button" tabindex="0">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
     </div>
+</nav>
+
+<div class="menubar">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+    </ul>
 </div>
 
 <!-- ===== Dashboard Section ===== -->
 <div id="dashboard" class="hidden">
-    <button class="logout-btn" id="logoutBtn">Logout</button>
     <h3>Welcome, <span id="userName"></span>!</h3>
 
-    <!-- Product Search -->
-    <input type="text" id="searchInput" placeholder="Search product by name or category" />
-    <button id="searchBtn">Search</button>
-
-    <!-- Category Filter Section -->
     <div id="categoryFilter" style="margin-bottom: 20px;"></div>
 
-    <!-- Products Table -->
-        <table id="productsTable">
-            <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th class="ok">Add to Cart</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div id="productsContainer" class="products-grid"></div>
 
-    <!-- Cart Table -->
-    <h3>Your Cart</h3>
+    <h3 id="Cart_Id">Your Cart</h3>
     <table id="cartTable">
         <thead>
         <tr>
@@ -280,12 +79,12 @@
         </thead>
         <tbody></tbody>
     </table>
+
     <div id="totalPrice" style="text-align: right; font-size: 18px; font-weight: bold; margin-top: 10px;">
         Total Price: $<span id="totalAmount">00.0</span>
     </div>
     <button id="buyBtn">Buy Now</button>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>

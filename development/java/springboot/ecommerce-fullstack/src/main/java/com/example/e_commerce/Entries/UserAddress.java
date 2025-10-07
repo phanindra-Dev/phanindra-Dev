@@ -24,5 +24,13 @@ public class UserAddress {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public String getFullAddress() {
+        return String.format("%s, %s, %s - %s",
+                this.addressLine1 != null ? this.addressLine1 : "",
+                this.city != null ? this.city : "",
+                this.state != null ? this.state : "",
+                this.zipCode != null ? this.zipCode : ""
+        );
+    }
     // getters & setters
 }

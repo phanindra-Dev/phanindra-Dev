@@ -1,100 +1,64 @@
+// ==============================
+// Global Variables
+// ==============================
 let products = [];
 let cart = [];
 let currentUser = null;
 
-// Sections
-const loginSection = document.getElementById('loginSection');
-const signupSection = document.getElementById('signupSection');
+// Sections and elements
 const dashboard = document.getElementById('dashboard');
+const nav = document.getElementById('nav');
 
-// Toggle signup/login
-document.getElementById('showSignup').onclick = () => {
-    loginSection.classList.add('hidden');
-    signupSection.classList.remove('hidden');
-};
-document.getElementById('showLogin').onclick = () => {
-    signupSection.classList.add('hidden');
-    loginSection.classList.remove('hidden');
-};
-
-// Login form submission
-document.getElementById('loginForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    try {
-        const res = await fetch('http://localhost:8080/users/all');
-        const users = await res.json();
-        const user = users.find(u => u.email === email && u.password === password);
-
-        if (user) {
-            currentUser = user;
-            loginSection.classList.add('hidden');
-            dashboard.classList.remove('hidden');
-            document.getElementById('userName').innerText = user.name;
-
-            await fetchProducts();
-            await fetchCart();
-            renderProducts(products);
-            renderCart();
-            fetchTotalPrice();
-        } else {
-            alert('Invalid credentials');
-        }
-    } catch (err) {
-        console.error(err);
-        alert('Server error');
-    }
-};
-
-// Signup form submission
-document.getElementById('signupForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-
-    try {
-        await fetch('http://localhost:8080/users/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password }),
-        });
-        alert('Signup successful! Please login.');
-        signupSection.classList.add('hidden');
-        loginSection.classList.remove('hidden');
-    } catch (err) {
-        console.error(err);
-        alert('Server error');
-    }
-};
-
+// ==============================
 // Logout
-document.getElementById('logoutBtn').onclick = () => {
+// ==============================
+document.getElementById('logoutBtn').onclick = async () => {
+    try {
+        await fetch("http://localhost:8080/users/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+    } catch (err) {
+        console.warn("Backend logout failed:", err);
+    }
+
+    // Clear session
     currentUser = null;
     cart = [];
-    dashboard.classList.add('hidden');
-    loginSection.classList.remove('hidden');
+    localStorage.removeItem("currentUser");
+
+    // Redirect to login page
+    window.location.href = "login.html";
 };
 
-// Fetch products from backend
+// ==============================
+// Fetch Products
+// ==============================
 async function fetchProducts() {
     try {
-        const res = await fetch('http://localhost:8080/products/all');
+        const res = await fetch('http://localhost:8080/products/all', {
+            method: 'GET',
+            credentials: 'include'
+        });
         products = await res.json();
         generateCategoryButtons();
         renderProducts(products);
     } catch (err) {
-        console.error(err);
+        console.error("Error fetching products:", err);
         alert('Error fetching products');
     }
 }
 
-// Fetch cart for current user
+// ==============================
+// Fetch Cart
+// ==============================
 async function fetchCart() {
+    if (!currentUser) return;
     try {
-        const res = await fetch(`http://localhost:8080/cart/view/${currentUser.userId}`);
+        const res = await fetch(`http://localhost:8080/cart/view/${currentUser.userId}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
         const userCart = await res.json();
         cart = userCart.cartItems.map(item => ({
             cartItemId: item.cartItemId,
@@ -102,53 +66,53 @@ async function fetchCart() {
             quantity: item.quantity,
             price: item.price,
         }));
+        renderCart();
+        fetchTotalPrice();
     } catch (err) {
         cart = [];
-        console.error(err);
+        console.error("Error fetching cart:", err);
     }
 }
 
-// Render products in the table
-//function renderProducts(productsList) {
-//    const tbody = document.querySelector('#productsTable tbody');
-//    tbody.innerHTML = '';
-//    productsList.forEach(product => {
-//        const row = document.createElement('tr');
-//        row.innerHTML = `
-//            <td>${product.productId}</td>
-//            <td>${product.productName}</td>
-//            <td>${product.category}</td>
-//            <td>${product.price}</td>
-//            <td><button onclick="addToCart(${product.productId})">Add to Cart</button></td>
-//        `;
-//        tbody.appendChild(row);
-//    });
-//}
- function renderProducts(productsList) {
-            const tbody = document.querySelector('#productsTable tbody');
-            tbody.innerHTML = '';  // Clear existing table rows
+// ==============================
+// Render Products
+// ==============================
+function renderProducts(productsList) {
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
 
-            productsList.forEach(product => {
-                const row = document.createElement('tr');
+    if (!productsList || productsList.length === 0) {
+        container.innerHTML = '<p>No products found.</p>';
+        return;
+    }
 
-                row.innerHTML = `
-                    <td>${product.productId}</td>
-                    <td>${product.productName}</td>
-                    <td>${product.category}</td>
-                    <td>$${product.price}</td>
-                    <td style="display: flex; align-items: center; justify-content: center;">
-                        <button class="add-to-cart-button" onclick="addToCart(${product.productId})">Add to Cart</button>
-                    </td>
-                `;
+    productsList.forEach(product => {
+        const card = document.createElement('div');
+        card.classList.add('product-card');
+        card.innerHTML = `
+            <img src="${product.imageUrl}" alt="${product.productName}" class="product-img" />
+            <h3>${product.productName}</h3>
+            <p>Category: ${product.category}</p>
+            <p>Price: $${product.price}</p>
+            <button onclick="addToCart(${product.productId})">Add to Cart</button>
+        `;
+        container.appendChild(card);
+    });
+}
 
-                tbody.appendChild(row);
-            });
-        }
-
-// Render cart in the table
+// ==============================
+// Render Cart
+// ==============================
 function renderCart() {
     const tbody = document.querySelector('#cartTable tbody');
     tbody.innerHTML = '';
+
+    if (!cart || cart.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">Cart is empty</td></tr>';
+        document.getElementById("totalAmount").innerText = "0.00";
+        return;
+    }
+
     cart.forEach(item => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -159,14 +123,18 @@ function renderCart() {
         `;
         tbody.appendChild(row);
     });
-    fetchTotalPrice();
 }
 
-// Add product to cart
+// ==============================
+// Add to Cart
+// ==============================
 async function addToCart(productId) {
+    if (!currentUser) { alert("Please login first!"); return; }
+
     try {
         const res = await fetch(`http://localhost:8080/cart/add?userId=${currentUser.userId}&productId=${productId}&quantity=1`, {
             method: 'POST',
+            credentials: 'include'
         });
         const updatedCart = await res.json();
         cart = updatedCart.cartItems.map(item => ({
@@ -176,17 +144,21 @@ async function addToCart(productId) {
             price: item.price,
         }));
         renderCart();
+        fetchTotalPrice();
     } catch (err) {
-        console.error(err);
+        console.error("Error adding to cart:", err);
         alert('Error adding to cart');
     }
 }
 
-// Remove item from cart
+// ==============================
+// Remove from Cart
+// ==============================
 async function removeFromCart(cartItemId) {
     try {
         const res = await fetch(`http://localhost:8080/cart/remove/${cartItemId}`, {
             method: 'DELETE',
+            credentials: 'include'
         });
         if (!res.ok) throw new Error('Failed to remove item');
         const updatedCart = await res.json();
@@ -197,17 +169,21 @@ async function removeFromCart(cartItemId) {
             price: item.price,
         }));
         renderCart();
+        fetchTotalPrice();
     } catch (err) {
-        console.error(err);
+        console.error("Error removing item:", err);
         alert('Error removing item from cart');
     }
 }
 
-// Update quantity in cart
+// ==============================
+// Update Cart Quantity
+// ==============================
 async function updateCartQuantity(cartItemId, quantity) {
     try {
         const res = await fetch(`http://localhost:8080/cart/update/${cartItemId}?quantity=${quantity}`, {
             method: 'PUT',
+            credentials: 'include'
         });
         const updatedCart = await res.json();
         cart = updatedCart.cartItems.map(item => ({
@@ -217,41 +193,50 @@ async function updateCartQuantity(cartItemId, quantity) {
             price: item.price,
         }));
         renderCart();
+        fetchTotalPrice();
     } catch (err) {
-        console.error(err);
+        console.error("Error updating cart:", err);
         alert('Error updating cart');
     }
 }
 
-// Get total price
+// ==============================
+// Total Price
+// ==============================
 async function fetchTotalPrice() {
+    if (!currentUser) return;
+
     try {
-        const res = await fetch(`http://localhost:8080/cart/total/${currentUser.userId}`);
+        const res = await fetch(`http://localhost:8080/cart/total/${currentUser.userId}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
         if (!res.ok) throw new Error("Failed to fetch total price");
         const total = await res.json();
         document.getElementById("totalAmount").innerText = total.toFixed(2);
     } catch (err) {
-        console.error(err);
-        document.getElementById("totalAmount").innerText = "Error";
+        console.error("Error fetching total price:", err);
+        document.getElementById("totalAmount").innerText = "0.00";
     }
 }
 
-// Search products by name or category
+// ==============================
+// Search
+// ==============================
 document.getElementById('searchBtn').onclick = () => {
     const keyword = document.getElementById('searchInput').value.toLowerCase();
     const filtered = products.filter(
-        p =>
-            p.productName.toLowerCase().includes(keyword) ||
-            p.category.toLowerCase().includes(keyword)
+        p => p.productName.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword)
     );
     renderProducts(filtered);
 };
 
-// Generate category buttons dynamically
+// ==============================
+// Category Filter
+// ==============================
 function generateCategoryButtons() {
     const categoryFilter = document.getElementById('categoryFilter');
     categoryFilter.innerHTML = '';
-
     const categories = [...new Set(products.map(p => p.category))];
 
     categories.forEach(category => {
@@ -259,84 +244,117 @@ function generateCategoryButtons() {
         btn.classList.add('category-btn');
         btn.innerText = category;
         btn.style.margin = '5px';
-        btn.onclick = () => filterByCategory(category);
+        btn.onclick = () => renderProducts(products.filter(p => p.category === category));
         categoryFilter.appendChild(btn);
     });
 
     const allBtn = document.createElement('button');
     allBtn.classList.add('category-btn');
     allBtn.innerText = 'All Products';
-    allBtn.style.margin = '5px';
+    allBtn.style.margin = '10px';
     allBtn.onclick = () => renderProducts(products);
     categoryFilter.appendChild(allBtn);
 }
 
-// Filter products by category
-function filterByCategory(category) {
-    const filteredProducts = products.filter(p => p.category === category);
-    renderProducts(filteredProducts);
-}
-
-
-// Buy button logic
+// ==============================
+// Buy Button
+// ==============================
 document.getElementById('buyBtn').onclick = async () => {
-    if (!currentUser) {
-        alert("Please login first!");
-        return;
-    }
-
-    if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
+    if (!currentUser) { alert("Please login first!"); return; }
+    if (cart.length === 0) { alert("Your cart is empty!"); return; }
 
     try {
-        const items = cart.map(item => ({
-            productId: item.product.productId,
-            quantity: item.quantity
-        }));
-        console.log("hii1");
+        const items = cart.map(item => ({ productId: item.product.productId, quantity: item.quantity }));
+        const requestBody = { userId: currentUser.userId, addressId: 1, items: items };
 
-        const requestBody = {
-            userId: currentUser.userId,
-            addressId: 1, // choose default address
-            items: items
-        };
-        console.log("hii2");
-        // Call placeOrder API
         const response = await fetch('http://localhost:8080/orders/place', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(requestBody)
         });
-        console.log("hii3");
-        let data = null;
-               try {
-                   data = await response.json();
-               } catch (e) {
-                   console.warn("Response not JSON:", e);
-               }
 
-               if (!response.ok) {
-                   console.error("Backend error:", data);
-                   alert("Order failed: " + (data?.message || response.statusText));
-                   return;
-               }
+        const data = await response.json();
+        if (response.ok && data.status === "Success") {
+            cart = [];
+            renderCart();
+            fetchTotalPrice();
+            alert(`Order #${data.orderId} placed successfully!`);
+        } else {
+            alert("Order failed: " + (data?.message || response.statusText));
+        }
+    } catch (err) {
+        console.error("Error placing order:", err);
+        alert("Error placing order");
+    }
+};
 
-               console.log("hii4");
-               const order = data;
+// ==============================
+// Mobile Navbar Toggle
+// ==============================
+const mobileNav = document.querySelector(".hamburger");
+const navbar = document.querySelector(".menubar");
+const toggleNav = () => {
+    navbar.classList.toggle("active");
+    mobileNav.classList.toggle("hamburger-active");
+};
+mobileNav.addEventListener("click", toggleNav);
+document.querySelectorAll(".menubar a").forEach(link => link.addEventListener("click", toggleNav));
 
-               if (order.status === "Success") {
-                   cart = [];
-                   renderCart();
-                   fetchTotalPrice();
-                   alert(`Order #${order.orderId} completed successfully!`);
-               } else {
-                   alert(`Order failed: ${order.status}`);
-               }
+// ==============================
+// Check Session on Page Load
+// ==============================
+async function checkSession() {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+        currentUser = JSON.parse(storedUser);
+        dashboard.classList.remove("hidden");
+        nav.classList.remove("hidden");
+        document.getElementById("userName").innerText = currentUser.name;
+        await fetchProducts();
+        await fetchCart();
+    } else {
+        try {
+            const res = await fetch("http://localhost:8080/users/me", { method: "GET", credentials: "include" });
+            if (!res.ok) return;
+            const user = await res.json();
+            if (user) {
+                currentUser = user;
+                localStorage.setItem("currentUser", JSON.stringify(user));
+                dashboard.classList.remove("hidden");
+                nav.classList.remove("hidden");
+                document.getElementById("userName").innerText = user.name;
+                await fetchProducts();
+                await fetchCart();
+            }
+        } catch (err) { console.error("Session check failed:", err); }
+    }
+}
 
-           } catch (err) {
-               console.error("Network/JS error:", err);
-               alert("Error placing order: " + err.message);
-           }
-       };
+// Call session check on load
+window.onload = () => {
+    checkSession();
+};
+
+// Select the dark mode toggle button
+const darkModeToggle = document.getElementById('darkModeToggle');
+
+// Check if the user has already set a dark mode preference
+const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// Apply dark mode if it was previously set
+if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    darkModeToggle.innerText = 'Light Mode';
+}
+
+// Toggle dark mode when the button is clicked
+darkModeToggle.onclick = () => {
+    const isDark = document.body.classList.toggle('dark-mode');
+
+    // Store the preference in localStorage
+    localStorage.setItem('darkMode', isDark);
+
+    // Change the button text based on the mode
+    darkModeToggle.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+};

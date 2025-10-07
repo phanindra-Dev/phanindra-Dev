@@ -16,6 +16,7 @@ public class Product {
     private String productDetails;
     private int quantity;
     private int rating;
+    private String imageUrl;
     private double price;
     private String category;
 }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login | E-Commerce Portal</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="auth-fullscreen" id="loginSection">
+    <div class="auth-left">
+        <h2>Login</h2>
+        <p>Get access to your Orders, Wishlist and Recommendations</p>
+    </div>
+    <div class="auth-right">
+        <form id="loginForm" autocomplete="off">
+            <input type="email" id="loginEmail" placeholder="Enter Email" required />
+            <input type="password" id="loginPassword" placeholder="Enter Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <div class="toggle">
+            New to our store? <span id="showSignup">Create an account</span>
+        </div>
+        <p id="loginError" class="error-message"></p>
+    </div>
+</div>
+
+<!-- Signup Section -->
+<div class="auth-fullscreen hidden" id="signupSection">
+    <div class="auth-left">
+        <h2>Looks like you're new here!</h2>
+        <p>Sign up to start shopping with us</p>
+    </div>
+    <div class="auth-right">
+        <form id="signupForm" autocomplete="off">
+            <input type="text" id="signupName" placeholder="Enter Name" required />
+            <input type="email" id="signupEmail" placeholder="Enter Email" required />
+            <input type="password" id="signupPassword" placeholder="Enter Password" required />
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="toggle">
+            Already have an account? <span id="showLogin">Login</span>
+        </div>
+        <p id="signupError" class="error-message"></p>
+    </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

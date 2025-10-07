@@ -16,6 +16,8 @@ public class User {
 
     private String name;
     private String email;
+    private String phoneNumber;
+    private String role = "USER";
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

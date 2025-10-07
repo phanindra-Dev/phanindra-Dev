@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff; /* Set background to white */
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 32px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5%;
+            background-color: #333;
+        }
+
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        nav .logo h1 {
+            font-size: 1.5rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #2874f0;
+        }
+
+        /* Profile Section */
+        #user-info {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        #user-info h3 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #2874f0;
+            border-bottom: 2px solid #2874f0;
+            padding-bottom: 8px;
+        }
+
+        #user-info p {
+            font-size: 16px;
+            margin: 12px 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Orders Section */
+        #orders-section {
+            margin-top: 30px;
+        }
+
+        #orders-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #orders-section ul li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        #orders-section ul li p {
+            font-size: 14px;
+            color: #333;
+        }
+
+        #orders-section ul li span {
+            font-weight: bold;
+        }
+
+        /* Button Styles */
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            border: none;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+                cursor: pointer;
+            }
+
+            #user-info {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">
+        <h1>Phani</h1>
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </ul>
+
+    <div class="hamburger" aria-label="Toggle Menu" role="button" tabindex="0">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+    </div>
+</nav>
+
+<h1>User Profile</h1>
+
+<div id="user-info">
+    <!-- User info will show here -->
+</div>
+
+
+<script>
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const userId = user.userId;
+
+    // Fetch user details
+    fetch(`http://localhost:8080/users/me/${userId}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(user => {
+            console.log('User data:', user);
+
+            const userInfoDiv = document.getElementById('user-info');
+            if (!userInfoDiv) {
+                console.error('No element with id "user-info" found in HTML');
+                return;
+            }
+
+            userInfoDiv.innerHTML = `
+                <p><strong>Name:</strong> ${user.name}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Phone:</strong> ${user.phoneNumber || 'N/A'}</p>
+
+                ${user.address ? `
+                    <h3>Address</h3>
+                    <p>${user.address}</p>
+                ` : ''}
+
+                <div id="orders-section"></div>
+            `;
+
+            // Now fetch orders
+            fetch(`http://localhost:8080/orders/user/${userId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to fetch orders');
+                    return res.json();
+                })
+                .then(orders => {
+                    console.log("Orders:", orders);
+
+                    const ordersSection = document.getElementById('orders-section');
+                    if (orders.length) {
+                        ordersSection.innerHTML = `
+                            <h3>Orders</h3>
+                            <ul>
+                                ${orders.map(order => `
+                                    <li>
+                                        <p><span>Order #${order.orderId}</span> - ₹${order.totalAmount} (${order.status})</p>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        `;
+                    } else {
+                        ordersSection.innerHTML = `<p>No orders found.</p>`;
+                    }
+                })
+                .catch(err => {
+                    console.error("Order fetch error:", err);
+                    document.getElementById('orders-section').innerHTML = `<p>Failed to load orders.</p>`;
+                });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            document.getElementById('user-info').innerHTML = '<p>Failed to load user data.</p>';
+        });
+</script>
+</body>
+
+</html>
