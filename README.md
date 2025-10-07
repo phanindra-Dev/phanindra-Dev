@@ -92,7 +92,7 @@ cd my-dashboard
 
 ## 📈 Current Projects
 
-- 🔄 *Projects will be listed here as they are added*
+- 🔄 E-Commerce Full Stack Project
 
 ## 🤝 Contributing Guidelines
 
@@ -107,6 +107,7 @@ If collaborating with others:
 
 - GitHub: Phanindra-Dev
 - Email: phanindrajaychand0@gmail.com
+- LinkedIn : https://www.linkedin.com/in/phanindra-nulakani-a523a0264/
 
 
 ---
