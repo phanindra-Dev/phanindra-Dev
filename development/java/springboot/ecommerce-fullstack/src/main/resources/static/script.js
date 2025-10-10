@@ -230,9 +230,9 @@ document.getElementById('searchInput').addEventListener('input', () => {
         // Optionally reset or show all products
         renderProducts(products);
     } else {
-        const filtered = Array.isArray(products) ? products.filter(
+        const filtered = (products || []).filter(
             p => p.productName.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword)
-        ) : [];
+        );
         renderProducts(filtered);
     }
 });
@@ -370,6 +370,10 @@ darkModeToggle.onclick = () => {
 
     // Store the preference in localStorage
     localStorage.setItem('darkMode', isDark);
+    let b = document.getElementById('dashboard');
+
+    // Apply the background color based on dark mode state
+    b.style.backgroundColor = isDark ? '#121212' : '#ffffff';
 
     // Change the button text based on the mode
     darkModeToggle.innerText = isDark ? 'Light Mode' : 'Dark Mode';

@@ -5,6 +5,41 @@
     <title>Login | E-Commerce Portal</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
+<style>
+    #password-reset-form {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        display: none; /* Hidden initially */
+    }
+
+    #password-reset-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    #password-reset-form input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    #password-reset-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #password-reset-form button:hover {
+        background-color: #0056b3;
+    }
+</style>
 <body>
 <div class="auth-fullscreen" id="loginSection">
     <div class="auth-left">
@@ -20,7 +55,24 @@
         <div class="toggle">
             New to our store? <span id="showSignup">Create an account</span>
         </div>
+        <div class="toggle">
+            <a href="#" id="forgetPasswordLink">Forgot Password?</a>
+        </div>
         <p id="loginError" class="error-message"></p>
+    </div>
+</div>
+
+<!-- Password Reset Section -->
+<div class="auth-fullscreen hidden" id="passwordResetSection">
+    <div class="auth-left">
+        <h2>Reset Your Password</h2>
+        <p>Enter your email to receive a reset link.</p>
+    </div>
+    <div class="auth-right">
+        <form id="resetPasswordForm" autocomplete="off">
+            <input type="email" id="reset-email" placeholder="Enter Email" required />
+            <button type="button" onclick="showResetPasswordFields()">Next</button>
+        </form>
     </div>
 </div>
 

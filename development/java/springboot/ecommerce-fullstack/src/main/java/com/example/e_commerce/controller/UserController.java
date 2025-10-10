@@ -1,6 +1,7 @@
 package com.example.e_commerce.controller;
 
 import com.example.e_commerce.Entries.User;
+import com.example.e_commerce.dto.PasswordResetRequest;
 import com.example.e_commerce.dto.UserProfileDTO;
 import com.example.e_commerce.services.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -77,6 +78,12 @@ public class UserController {
     public User getUserById(@PathVariable int userId) {
         return userService.getById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<Void> rp(@RequestBody PasswordResetRequest request) {
+        userService.resetPassword(request.getEmail(),request.getNewPassword());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 //    @GetMapping("/checkSession")

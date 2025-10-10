@@ -12,7 +12,7 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff; /* Set background to white */
+            background-color: #fff;
             color: #333;
         }
 
@@ -139,20 +139,60 @@
             background-color: #c82333;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-            }
+        /* Modal Box */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-            .hamburger {
-                display: block;
-                cursor: pointer;
-            }
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            width: 400px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
 
-            #user-info {
-                padding: 20px;
-            }
+        .modal input {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background-color: #2874f0;
+            color: white;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .modal button:hover {
+            background-color: #2451a3;
+        }
+
+        .close-btn {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
     </style>
 </head>
@@ -180,78 +220,123 @@
 
 <h1>User Profile</h1>
 
+<!-- Modal for Editing User Details -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3>Edit Address</h3>
+
+        <!-- Address Editing Form -->
+        <div id="address-form" class="form-section">
+            <input type="text" id="address-line1" placeholder="Address Line 1" />
+            <input type="text" id="address-line2" placeholder="Address Line 2" />
+            <input type="text" id="city" placeholder="City" />
+            <input type="text" id="state" placeholder="State" />
+            <input type="text" id="zip-code" placeholder="Zip Code" />
+            <input type="text" id="country" placeholder="Country" />
+            <button onclick="saveAddress()">Save Address</button>
+        </div>
+    </div>
+</div>
+
 <div id="user-info">
     <!-- User info will show here -->
 </div>
 
-
 <script>
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    const userId = user.userId;
+ const userId = user.userId;
 
-    // Fetch user details
-    fetch(`http://localhost:8080/users/me/${userId}`)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(user => {
-            console.log('User data:', user);
+ // Fetch user details and all addresses
+ Promise.all([
+     fetch(`http://localhost:8080/users/me/${userId}`).then(response => response.json()),
+     fetch(`http://localhost:8080/addresses/all`).then(response => response.json())
+ ])
+     .then(([user, allAddresses]) => {
+         console.log('User data:', user);
+         console.log('All addresses:', allAddresses);
 
-            const userInfoDiv = document.getElementById('user-info');
-            if (!userInfoDiv) {
-                console.error('No element with id "user-info" found in HTML');
-                return;
-            }
+         const userInfoDiv = document.getElementById('user-info');
+         if (!userInfoDiv) {
+             console.error('No element with id "user-info" found in HTML');
+             return;
+         }
 
-            userInfoDiv.innerHTML = `
-                <p><strong>Name:</strong> ${user.name}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Phone:</strong> ${user.phoneNumber || 'N/A'}</p>
+         userInfoDiv.innerHTML = `
+             <p><strong>Name:</strong> ${user.name}</p>
+             <p><strong>Email:</strong> ${user.email}</p>
+             <p><strong>Phone:</strong> ${user.phoneNumber || 'N/A'}</p>
+             <h3>Address</h3>
+             <p id="user-address">${user.address ? formatAddress(user.address) : 'No address provided'}</p>
+             <button onclick="openAddressModal()">Edit Address</button>
 
-                ${user.address ? `
-                    <h3>Address</h3>
-                    <p>${user.address}</p>
-                ` : ''}
+             <div id="orders-section"></div>
+         `;
+     })
+     .catch(error => {
+         console.error('Fetch error:', error);
+         document.getElementById('user-info').innerHTML = '<p>Failed to load user data.</p>';
+     });
 
-                <div id="orders-section"></div>
-            `;
+ // Format the address as a readable string
+ function formatAddress(address) {
+     return `${address.addressLine1}, ${address.addressLine2}, ${address.city}, ${address.state} ${address.zipCode}, ${address.country}`;
+ }
 
-            // Now fetch orders
-            fetch(`http://localhost:8080/orders/user/${userId}`)
-                .then(res => {
-                    if (!res.ok) throw new Error('Failed to fetch orders');
-                    return res.json();
-                })
-                .then(orders => {
-                    console.log("Orders:", orders);
+ // Open modal for address editing and show available addresses
+ function openAddressModal() {
+     document.getElementById('editModal').style.display = 'flex';
+     document.getElementById('address-form').style.display = 'block';
 
-                    const ordersSection = document.getElementById('orders-section');
-                    if (orders.length) {
-                        ordersSection.innerHTML = `
-                            <h3>Orders</h3>
-                            <ul>
-                                ${orders.map(order => `
-                                    <li>
-                                        <p><span>Order #${order.orderId}</span> - ₹${order.totalAmount} (${order.status})</p>
-                                    </li>
-                                `).join('')}
-                            </ul>
-                        `;
-                    } else {
-                        ordersSection.innerHTML = `<p>No orders found.</p>`;
-                    }
-                })
-                .catch(err => {
-                    console.error("Order fetch error:", err);
-                    document.getElementById('orders-section').innerHTML = `<p>Failed to load orders.</p>`;
-                });
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            document.getElementById('user-info').innerHTML = '<p>Failed to load user data.</p>';
-        });
+     // Fetch and display all addresses in the modal
+     fetch(`http://localhost:8080/addresses/all`)
+         .then(response => response.json())
+         .then(allAddresses => {
+             const addressSelect = document.getElementById('address-select');
+             addressSelect.innerHTML = ''; // Clear previous options
+
+             allAddresses.forEach(address => {
+                 const option = document.createElement('option');
+                 option.value = address.id;
+                 option.textContent = formatAddress(address);
+                 addressSelect.appendChild(option);
+             });
+         })
+         .catch(err => console.error('Error loading addresses:', err));
+ }
+
+ // Close the modal
+ function closeModal() {
+     document.getElementById('editModal').style.display = 'none';
+ }
+
+ // Save new Address
+ function saveAddress() {
+     const newAddress = {
+         addressLine1: document.getElementById('address-line1').value,
+         addressLine2: document.getElementById('address-line2').value,
+         city: document.getElementById('city').value,
+         state: document.getElementById('state').value,
+         zipCode: document.getElementById('zip-code').value,
+         country: document.getElementById('country').value,
+     };
+
+     // Add new address
+     fetch(`http://localhost:8080/addresses/add`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(newAddress)
+     })
+     .then(response => response.json())
+     .then(data => {
+         console.log('Address added:', data);
+         // After saving, you can update the address section
+         document.getElementById('user-address').innerText = formatAddress(newAddress);
+         closeModal();  // Close modal after saving
+     })
+     .catch(err => console.error('Error saving address:', err));
+ }
 </script>
-</body>
 
+</body>
 </html>

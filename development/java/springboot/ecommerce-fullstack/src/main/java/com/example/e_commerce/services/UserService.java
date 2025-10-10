@@ -6,6 +6,7 @@ import com.example.e_commerce.dto.UserProfileDTO;
 import com.example.e_commerce.repo.OrderRepo;
 import com.example.e_commerce.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class UserService {
 
     @Autowired
     private OrderRepo orderRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Create user / Signup
     public User createUser(User user) {
@@ -54,10 +58,9 @@ public class UserService {
         User user = (User) userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        if (!password.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
-
         return user;
     }
 
@@ -89,4 +92,27 @@ public class UserService {
         }
         return profile;
     }
+
+    public void resetPassword(String email, String newPassword) {
+        // Find user by email
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            return;  // User not found
+        }
+
+        // Get the actual User object from the Optional
+        User user = userOpt.get();
+
+        // Hash the new password
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        // Update the user's password
+        user.setPassword(hashedPassword);
+
+        // Save the updated user
+        userRepository.save(user);
+
+    }
+
 }
