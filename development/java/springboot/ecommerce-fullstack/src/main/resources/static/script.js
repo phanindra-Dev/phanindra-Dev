@@ -129,25 +129,75 @@ function renderCart() {
 // Add to Cart
 // ==============================
 async function addToCart(productId) {
-    if (!currentUser) { alert("Please login first!"); return; }
+    if (!currentUser) {
+        alert("Please login first!");
+        return;
+    }
 
     try {
-        const res = await fetch(`http://localhost:8080/cart/add?userId=${currentUser.userId}&productId=${productId}&quantity=1`, {
-            method: 'POST',
+        // Fetch the current cart to check if the product already exists
+        const res = await fetch(`http://localhost:8080/cart/view/${currentUser.userId}`, {
+            method: 'GET',
             credentials: 'include'
         });
-        const updatedCart = await res.json();
-        cart = updatedCart.cartItems.map(item => ({
-            cartItemId: item.cartItemId,
-            product: item.product,
-            quantity: item.quantity,
-            price: item.price,
-        }));
+
+        const userCart = await res.json();
+        console.log("Fetched cart:", userCart);
+
+        // Find the item in the cart by matching the product ID
+        const existingItem = userCart.cartItems.find(item => item.product.productId === productId);
+
+        if (existingItem) {
+            // If the product exists, increase the quantity by 1
+            const updatedQuantity = existingItem.quantity + 1;
+
+            console.log(`Updating quantity for product ID ${productId} to ${updatedQuantity}`);
+
+            // Use PUT request to update the cart item quantity
+            const updateRes = await fetch(`http://localhost:8080/cart/update/${existingItem.cartItemId}?quantity=${updatedQuantity}`, {
+                method: 'PUT', // Use PUT for updating the quantity
+                credentials: 'include'
+            });
+
+            if (!updateRes.ok) {
+                throw new Error("Failed to update the cart");
+            }
+
+            const updatedCart = await updateRes.json();
+            cart = updatedCart.cartItems.map(item => ({
+                cartItemId: item.cartItemId,
+                product: item.product,
+                quantity: item.quantity,
+                price: item.price,
+            }));
+        } else {
+            // If the product does not exist, add it with quantity 1
+            console.log(`Adding new product ID ${productId} with quantity 1`);
+
+            const addRes = await fetch(`http://localhost:8080/cart/add?userId=${currentUser.userId}&productId=${productId}&quantity=1`, {
+                method: 'POST', // Use POST to add the product
+                credentials: 'include'
+            });
+
+            if (!addRes.ok) {
+                throw new Error("Failed to add product to the cart");
+            }
+
+            const updatedCart = await addRes.json();
+            cart = updatedCart.cartItems.map(item => ({
+                cartItemId: item.cartItemId,
+                product: item.product,
+                quantity: item.quantity,
+                price: item.price,
+            }));
+        }
+
         renderCart();
         fetchTotalPrice();
+
     } catch (err) {
         console.error("Error adding to cart:", err);
-        alert('Error adding to cart');
+        alert('Error updating cart. Please check the console for more details.');
     }
 }
 
@@ -236,15 +286,6 @@ document.getElementById('searchInput').addEventListener('input', () => {
         renderProducts(filtered);
     }
 });
-//document.getElementById('searchBtn').onclick = () => {
-//    const keyword =
-//    document.getElementById('searchInput').value.toLowerCase();
-//    const filtered = products.filter(
-//        p => p.productName.toLowerCase().includes(keyword) ||
-//        p.category.toLowerCase().includes(keyword)
-//    );
-//renderProducts(filtered);
-//};
 
 
 // ==============================

@@ -219,7 +219,6 @@
 </nav>
 
 <h1>User Profile</h1>
-
 <!-- Modal for Editing User Details -->
 <div id="editModal" class="modal">
     <div class="modal-content">
@@ -228,6 +227,10 @@
 
         <!-- Address Editing Form -->
         <div id="address-form" class="form-section">
+            <select id="address-select">
+                <option value="">Select an address</option>
+                <!-- Address options will go here -->
+            </select>
             <input type="text" id="address-line1" placeholder="Address Line 1" />
             <input type="text" id="address-line2" placeholder="Address Line 2" />
             <input type="text" id="city" placeholder="City" />
@@ -241,102 +244,11 @@
 
 <div id="user-info">
     <!-- User info will show here -->
+    <p id="user-address">No address provided</p>
 </div>
 
-<script>
-    const user = JSON.parse(localStorage.getItem("currentUser"));
- const userId = user.userId;
 
- // Fetch user details and all addresses
- Promise.all([
-     fetch(`http://localhost:8080/users/me/${userId}`).then(response => response.json()),
-     fetch(`http://localhost:8080/addresses/all`).then(response => response.json())
- ])
-     .then(([user, allAddresses]) => {
-         console.log('User data:', user);
-         console.log('All addresses:', allAddresses);
-
-         const userInfoDiv = document.getElementById('user-info');
-         if (!userInfoDiv) {
-             console.error('No element with id "user-info" found in HTML');
-             return;
-         }
-
-         userInfoDiv.innerHTML = `
-             <p><strong>Name:</strong> ${user.name}</p>
-             <p><strong>Email:</strong> ${user.email}</p>
-             <p><strong>Phone:</strong> ${user.phoneNumber || 'N/A'}</p>
-             <h3>Address</h3>
-             <p id="user-address">${user.address ? formatAddress(user.address) : 'No address provided'}</p>
-             <button onclick="openAddressModal()">Edit Address</button>
-
-             <div id="orders-section"></div>
-         `;
-     })
-     .catch(error => {
-         console.error('Fetch error:', error);
-         document.getElementById('user-info').innerHTML = '<p>Failed to load user data.</p>';
-     });
-
- // Format the address as a readable string
- function formatAddress(address) {
-     return `${address.addressLine1}, ${address.addressLine2}, ${address.city}, ${address.state} ${address.zipCode}, ${address.country}`;
- }
-
- // Open modal for address editing and show available addresses
- function openAddressModal() {
-     document.getElementById('editModal').style.display = 'flex';
-     document.getElementById('address-form').style.display = 'block';
-
-     // Fetch and display all addresses in the modal
-     fetch(`http://localhost:8080/addresses/all`)
-         .then(response => response.json())
-         .then(allAddresses => {
-             const addressSelect = document.getElementById('address-select');
-             addressSelect.innerHTML = ''; // Clear previous options
-
-             allAddresses.forEach(address => {
-                 const option = document.createElement('option');
-                 option.value = address.id;
-                 option.textContent = formatAddress(address);
-                 addressSelect.appendChild(option);
-             });
-         })
-         .catch(err => console.error('Error loading addresses:', err));
- }
-
- // Close the modal
- function closeModal() {
-     document.getElementById('editModal').style.display = 'none';
- }
-
- // Save new Address
- function saveAddress() {
-     const newAddress = {
-         addressLine1: document.getElementById('address-line1').value,
-         addressLine2: document.getElementById('address-line2').value,
-         city: document.getElementById('city').value,
-         state: document.getElementById('state').value,
-         zipCode: document.getElementById('zip-code').value,
-         country: document.getElementById('country').value,
-     };
-
-     // Add new address
-     fetch(`http://localhost:8080/addresses/add`, {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify(newAddress)
-     })
-     .then(response => response.json())
-     .then(data => {
-         console.log('Address added:', data);
-         // After saving, you can update the address section
-         document.getElementById('user-address').innerText = formatAddress(newAddress);
-         closeModal();  // Close modal after saving
-     })
-     .catch(err => console.error('Error saving address:', err));
- }
-</script>
+<script src="profile.js"></script>
 
 </body>
 </html>
